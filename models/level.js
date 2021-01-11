@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     de_status: DataTypes.INTEGER,
     dc_start: DataTypes.STRING,
     de_start: DataTypes.STRING,
-    current: DataTypes.ARRAY,
+    current: DataTypes.ARRAY(DataTypes.INTEGER),
     mon: DataTypes.STRING,
     tue: DataTypes.STRING,
     wed: DataTypes.STRING,

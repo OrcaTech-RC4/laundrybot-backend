@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       current: {
-        type: Sequelize.ARRAY
+        type: Sequelize.ARRAY(Sequelize.INTEGER)
       },
       mon: {
         type: Sequelize.STRING
