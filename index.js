@@ -3,6 +3,9 @@ const path = require('path');
 const db = require('./models');
 const logger = require('./logger/logger');
 const app = express();
+const CronJob = require('cron').CronJob;
+const Sequelize = require('sequelize');
+const tz = 'Asia/Singapore';
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,6 +24,9 @@ db.sequelize.sync().then(() => {
     });
 });
 
+//Cronjob
+const job = new CronJob('5 * * * *', () => { } , null, true, tz);
+job.start();
 
 
 // app.get('/api/level/:id', (req, res) => {
