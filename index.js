@@ -51,8 +51,10 @@ function updateRecord(data, lvl) {
     await laundrydata.update({ current: updated_current });
 }
 function doForAllLevel(func1, func2) {
-    for (let i = 1; i <= 17; i++){ //check what the id(pk) is like 
-        func2(func1(i), i);
+    const levelsWithLaundry = [5, 8, 11, 14, 17];
+    for (let i = 0; i < 5; i++) {
+        const j = levelsWithLaundry[i];
+        func2(func1(j), j);
     }
 }
 const job = new CronJob('5 * * * *', doForAllLevel(getNumberofActiveMachines, updateRecord) , null, true, tz);
