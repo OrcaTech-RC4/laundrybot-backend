@@ -2,9 +2,9 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Levels', {
-      id: {
+      level: {
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
@@ -26,10 +26,10 @@ module.exports = {
       de_status: {
         type: Sequelize.INTEGER
       },
-      dc_start: {
+      dc_start_time: {
         type: Sequelize.STRING
       },
-      de_start: {
+      de_start_time: {
         type: Sequelize.STRING
       },
       current: {
