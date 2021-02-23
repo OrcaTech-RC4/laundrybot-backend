@@ -4,10 +4,10 @@ const db = require('./models');
 const logger = require('./logger/logger');
 const app = express();
 const CronJob = require('cron').CronJob;
-const { Level } = require('./sequelize');
 const tz = 'Asia/Singapore';
 
-const init_database = require('./insertLevels.js')
+const initDatabase = require('./insertLevels.js');
+const cronFunction = require('./cronUpdate.js');
 
 const PORT = process.env.PORT || 5000;
 
@@ -20,65 +20,16 @@ app.use(express.urlencoded({extended: true }));
 const apiRoutes = require('./routes/apiRoutes');
 app.use('/api', apiRoutes);
 
-init_database();
+initDatabase();
+
+xjob = new CronJob('* * * * *', cronFunction , null, true, tz);
+xjob.start();
 
 db.sequelize.sync().then(() => {
     app.listen(PORT, () => {
         console.log(`Server started on ${PORT}`);
     });
 });
-
-//Cronjob
-//I did it this way instead of findall query because I thought we need to update the data per level
-function getNumberofActiveMachines(no) {
-    const laundrydata = await Level.findByPK(no); //if using sequelize 6. Not sure what's the version we r using
-    let numberofActiveMachines = 0;
-    let isActivewc = ((laundrydata.wcstatus === 1) || (laundrydata.wcstatus ===  2)) ? 1 : 0;
-    let isActivewe = ((laundrydata.westatus === 1) || (laundrydata.westatus ===  2)) ? 1 : 0;
-    let isActivedc = ((laundrydata.dcstatus === 1) || (laundrydata.dcstatus ===  2)) ? 1 : 0;
-    let isActivede = ((laundrydata.destatus === 1) || (laundrydata.destatus ===  2)) ? 1 : 0;
-    numberofActiveMachines = isActivewc + isActivewe + isActivedc + isActivede;
-    return numberofActiveMachines;
-}
-function updateRecord(data, lvl) {
-    const laundrydata = await Level.findByPK(lvl); 
-    let updated_current = laundrydata.current;
-    if (!updated_current) {
-        updated_current = [];
-    }
-    else if (updated_current.length >= 288) {
-        updated_current = [];
-    }
-    else {
-        updated_current.push(data);
-    }
-    await laundrydata.update({ current: updated_current });
-}
-function doForAllLevel(func1, func2) {
-    const levelsWithLaundry = [5, 8, 11, 14, 17];
-    for (let i = 0; i < 5; i++) {
-        const j = levelsWithLaundry[i];
-        func2(func1(j), j);
-    }
-}
-const job = new CronJob('5 * * * *', doForAllLevel(getNumberofActiveMachines, updateRecord) , null, true, tz);
-job.start();
-
-// app.get('/api/level/:id', (req, res) => {
-//     const id = req.params.id;
-//     const levels = [4, 7, 10, 13];
-
-//     const found = levels.filter(value => value == id).length;
-
-//     if (found) {
-//         res.send(`Sending level ${id} data`);
-//     } else {
-//         res.status(400).json({
-//             msg: `No laundry room in level ${id}`
-//         })
-//     }
-// });
-
 
 
 

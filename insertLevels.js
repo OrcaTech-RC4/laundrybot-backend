@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('./models');
 const moment = require('moment');
 
-var init_database = () => {
+var initDatabase = () => {
 level_array = [5,8,11,14,17];
     for (let index = 0; index < level_array.length; index++) {
     db.Level.create({
@@ -17,7 +17,7 @@ level_array = [5,8,11,14,17];
         dc_start_time: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
         de_start_time: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
         current: [0,0,0,0],
-        mon: "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+        mon: "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", // 00:00-00:59, 01:00-01:59, etc until 23:00-23:59
         tue: "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
         wed: "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
         thu: "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -28,4 +28,4 @@ level_array = [5,8,11,14,17];
     }
 }
 
-module.exports = init_database
+module.exports = initDatabase
