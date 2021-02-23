@@ -1,8 +1,12 @@
 'use strict';
 const {
-  Model
+  Model,
+  DataTypes,
+  Sequelize
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
+  
   class Level extends Model {
     /**
      * Helper method for defining associations.
@@ -13,15 +17,21 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
+
   Level.init({
+    level: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: false
+    },
     wc_status: DataTypes.INTEGER,
     we_status: DataTypes.INTEGER,
     we_start_time: DataTypes.STRING,
     wc_start_time: DataTypes.STRING,
     dc_status: DataTypes.INTEGER,
     de_status: DataTypes.INTEGER,
-    dc_start: DataTypes.STRING,
-    de_start: DataTypes.STRING,
+    dc_start_time: DataTypes.STRING,
+    de_start_time: DataTypes.STRING,
     current: DataTypes.ARRAY(DataTypes.INTEGER),
     mon: DataTypes.STRING,
     tue: DataTypes.STRING,
