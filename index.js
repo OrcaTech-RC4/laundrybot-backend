@@ -4,6 +4,8 @@ const db = require('./models');
 const logger = require('./logger/logger');
 const app = express();
 
+const init_database = require('./insertLevels.js')
+
 const PORT = process.env.PORT || 5000;
 
 app.use(logger);
@@ -14,6 +16,8 @@ app.use(express.urlencoded({extended: true }));
 
 const apiRoutes = require('./routes/apiRoutes');
 app.use('/api', apiRoutes);
+
+init_database();
 
 db.sequelize.sync().then(() => {
     app.listen(PORT, () => {
