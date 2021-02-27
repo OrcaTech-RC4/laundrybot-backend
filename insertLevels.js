@@ -4,8 +4,8 @@ const db = require('./models');
 const moment = require('moment');
 
 var initDatabase = () => {
-level_array = [5,8,11,14,17];
-    for (let index = 0; index < level_array.length; index++) {
+const level_array = [5,8,11,14,17];
+for (let index = 0; index < level_array.length; index++) {
     db.Level.create({
         level: level_array[index],
         wc_status: 0,

@@ -22,7 +22,7 @@ app.use('/api', apiRoutes);
 
 initDatabase();
 
-xjob = new CronJob('* * * * *', cronFunction , null, true, tz);
+let xjob = new CronJob('* * * * *', cronFunction , null, true, tz);
 xjob.start();
 
 db.sequelize.sync().then(() => {
