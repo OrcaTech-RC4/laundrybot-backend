@@ -11,7 +11,18 @@ function replaceAt(string, index, replacement) {
 }
 
 function incrementValueFromCSVLine(string, index, val) {
-    return replaceAt(string, index, parseInt(string.charAt(index)) + val);
+    // return replaceAt(string, index, parseInt(string.charAt(index)) + val);
+    let nextCommaIndex;
+    for(let i = index; i < string.length; i++){
+        if(string[i] == ','){
+            nextCommaIndex = i;
+            break;
+        }
+    }
+    if(nextCommaIndex){
+        return string.substring(0, index) + (parseInt(string.substring(index, nextCommaIndex)) + val) + string.substring(nextCommaIndex);
+    }
+    return string.substring(0, index) + (parseInt(string.substring(index)) + val);
 }
 
 //Cronjob
