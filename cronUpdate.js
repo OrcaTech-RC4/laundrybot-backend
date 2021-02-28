@@ -27,14 +27,20 @@ function incrementValueFromCSVLine(string, index, val) {
 
 //Cronjob
 //I did it this way instead of findall query because I thought we need to update the data per level
-function getNumberofActiveMachines(no) {
-    const laundrydata = db.Level.findByPk(no); //if using sequelize 6
-    let numberofActiveMachines = 0;
-    let isActivewc = ((laundrydata.wcstatus === 1) || (laundrydata.wcstatus ===  2)) ? 1 : 0;
-    let isActivewe = ((laundrydata.westatus === 1) || (laundrydata.westatus ===  2)) ? 1 : 0;
-    let isActivedc = ((laundrydata.dcstatus === 1) || (laundrydata.dcstatus ===  2)) ? 1 : 0;
-    let isActivede = ((laundrydata.destatus === 1) || (laundrydata.destatus ===  2)) ? 1 : 0;
-    numberofActiveMachines = isActivewc + isActivewe + isActivedc + isActivede;
+async function getNumberofActiveMachines(lvl) {
+    const laundrydata = db.Level.findByPk(lvl);
+    var numberofActiveMachines = 0;
+    await laundrydata.then(x => {
+        const wc = x.getDataValue("wc_status") > 0;
+        const we = x.getDataValue("we_status") > 0;
+        const dc = x.getDataValue("dc_status") > 0;
+        const de = x.getDataValue("de_status") > 0;
+        
+        numberofActiveMachines = wc + we + dc + de;
+    }).catch(err => {
+        console.log(err);
+    });
+    
     return numberofActiveMachines;
 }
 
@@ -46,9 +52,9 @@ function updateRecord(numOfActiveMachines, lvl) {
 
     laundrydata.then(x => {
         dailyData = x.getDataValue(day);
-        console.log(`${day}-${hour}:${dailyData}`);
-        dailyData = incrementValueFromCSVLine(dailyData, hour * 2, 3);
-        console.log(`${day}-${hour}:${dailyData}`);
+        console.log(`level-${lvl}:numActive-${numOfActiveMachines}:before:day-${day}:hour-${hour}:${dailyData}`);
+        dailyData = incrementValueFromCSVLine(dailyData, hour * 2, numOfActiveMachines);
+        console.log(`level-${lvl}:numActive-${numOfActiveMachines}:afteri:day-${day}:hour-${hour}:${dailyData}`);
         return dailyData;
     })
     .then(data =>{
@@ -56,24 +62,23 @@ function updateRecord(numOfActiveMachines, lvl) {
         query[day] = data;
         db.Level.update(query, {
             where: {
-                level: 8
+                level: lvl
             }
         }).then(result => console.log(result));
     }
     ).catch(err => console.log(err));
 }
 
-function doForAllLevel(func1, func2) {
+function doForAllLevel() {
     const levelsWithLaundry = [5, 8, 11, 14, 17];
-    for (let i = 0; i < 5; i++) {
-        const j = levelsWithLaundry[i];
-        func2(func1(j), j);
-    }
+    levelsWithLaundry.forEach(x => {
+        getNumberofActiveMachines(x).then(a => { updateRecord(a, x); });
+    });
 }
 
 function cronFunction () {
     console.log(`${moment().format()}:Update for all level`);
-    doForAllLevel(getNumberofActiveMachines, updateRecord);
+    doForAllLevel();
 }
 
 module.exports = cronFunction;
