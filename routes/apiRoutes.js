@@ -51,7 +51,7 @@ router.get('/levels/:level/statuses', async (req,res) => {
             
             const resp = {
                 ...datavalues,
-                level: 5,
+                level: level,
                 time: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
                 type: machines_names[i]
             }
