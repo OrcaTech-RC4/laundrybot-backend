@@ -1,5 +1,12 @@
 # Backend of Orcatech Laundry Bot
 
+## Requirements
+
+Visit `package.json`. This node app uses `cron` and `sequelize`.
+
+
+## Setup
+
 In your local repo directory, create a directory called `config` and a `config.json` file inside that contains the following:
 ```
 {
@@ -27,4 +34,9 @@ In your local repo directory, create a directory called `config` and a `config.j
   }
 }
 
+```
+
+Then run the following with reference to https://sequelize.org/master/manual/migrations.html.
+```
+npx sequelize-cli db:migrate
 ```
