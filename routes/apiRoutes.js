@@ -22,11 +22,9 @@ router.post('/create-update', (req, res) => {
 });
 
 router.get('/levels',(req,res)=>{
-    let respData={};
+    let respData={}
     try{
-        respData.success=true;
-        respData.levels=[5,8,11,14,17]
-        res.send(respData);
+        res.send([5,8,11,14,17]);
     }catch(err){
         respData.success=false
         respData.message=err.name
@@ -95,8 +93,8 @@ router.get('/levels/:level/charts',(req,res)=>{
     .then(resp=>{
         const data=resp.dataValues
         Object.keys(data).forEach(key=>{
-            let str=data[key].split(",")
-            respData[key]=str
+            let lst=map(parseInt,data[key].split(","))
+            respData[key]=lst
         })
         res.send(respData)
     })
