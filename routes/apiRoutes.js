@@ -21,7 +21,7 @@ router.post('/create-update', (req, res) => {
     .catch(err => console.log(err));
 });
 
-router.get('/levels',(req,res)=>{
+router.get('/levels', (req,res) => {
     let respData={}
     try{
         res.send([5,8,11,14,17]);
@@ -32,7 +32,7 @@ router.get('/levels',(req,res)=>{
     }   
 })
 
-router.get('/levels/:level/statuses',async (req,res)=>{
+router.get('/levels/:level/statuses',async (req,res) => {
     let respData=[]
     try{
         const level=req.params.level
@@ -82,7 +82,7 @@ router.get('/levels/:level/statuses',async (req,res)=>{
     
 })
 
-router.get('/levels/:level/charts',(req,res)=>{
+router.get('/levels/:level/charts', (req,res) => {
     let respData={}
     db.Level.findOne({
         where:{
@@ -103,7 +103,7 @@ router.get('/levels/:level/charts',(req,res)=>{
     })
 })
 
-router.post('/update',(req,res)=>{
+router.post('/update', (req,res) => {
     let {floor,data} =req.body
     db.Level.update({
         wc_status:parseInt(data.charAt(0)),
