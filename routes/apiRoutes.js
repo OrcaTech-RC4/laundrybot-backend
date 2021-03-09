@@ -95,7 +95,7 @@ router.post('/update', async (req,res) => {
             }
         })
         current=current.dataValues.current
-        console.log(current)
+
         let statuses=Array.from(data).map(x => parseInt(x, 10))
         if(current[0]==0 && statuses[0]==1){
             await db.Level.update({
@@ -153,27 +153,5 @@ router.post('/update', async (req,res) => {
         console.log(err)
     }
 })
-    
-    // db.Level.update({
-    //     wc_status: parseInt(data.charAt(0)),
-    //     we_status: parseInt(data.charAt(1)),
-    //     dc_status: parseInt(data.charAt(2)),
-    //     de_status: parseInt(data.charAt(3)),
-    //     current: Array.from(data).map(x => parseInt(x, 10))
-    // },{
-    //     where: {
-    //         level: floor
-    //     },
-    //     returning: true,
-    //     plain: true
-    // }).then(respData => {
-    //     res.send(respData)
-    // }).catch(err => {
-    //     res.send(err.name)
-    // });
-
-
-
-
 
 module.exports = router;
