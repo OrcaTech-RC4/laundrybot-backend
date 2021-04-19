@@ -85,29 +85,74 @@ router.get('/levels/:level/charts', (req,res) => {
     })
 })
 
-router.post('/update', (req,res) => {
-    let {floor,data} = req.body
-    db.Level.update({
-        wc_status: parseInt(data.charAt(0)),
-        we_status: parseInt(data.charAt(1)),
-        dc_status: parseInt(data.charAt(2)),
-        de_status: parseInt(data.charAt(3)),
-        current: Array.from(data).map(x => parseInt(x, 10))
-    },{
-        where: {
-            // floorcode is 1,2,3,4,5 (pi number) that maps to 5,8,11,14,17
-            level: [5,8,11,14,17][floor - 1]
-        },
-        returning: true,
-        plain: true
-    }).then(respData => {
-        res.send(respData)
-    }).catch(err => {
-        res.send(err.name)
-    });
+router.post('/update', async (req,res) => {
+    let {floor:floordata,data} = req.body;
+    const floor = [5,8,11,14,17][floordata - 1];
+    try {
+        let current=await db.Level.findOne({
+            attributes:["current"],
+            where:{
+                level:floor
+            }
+        })
+        current=current.dataValues.current
+
+        let statuses=Array.from(data).map(x => parseInt(x, 10))
+        if(current[0]==0 && statuses[0]==1){
+            await db.Level.update({
+                wc_start_time:moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+            },{
+                where:{
+                    level:floor
+                }
+            })
+        }
+        if(current[1]==0 && statuses[1]==1){
+            await db.Level.update({
+                we_start_time:moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+            },{
+                where:{
+                    level:floor
+                }
+            })
+        }
+        if(current[2]==0 && statuses[2]==1){
+            await db.Level.update({
+                dc_start_time:moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+            },{
+                where:{
+                    level:floor
+                }
+            })
+        }
+        if(current[3]==0 && statuses[3]==1){
+            await db.Level.update({
+                de_start_time:moment().format('YYYY-MM-DD HH:mm:ss.SSS')
+            },{
+                where:{
+                    level:floor
+                }
+            })
+        }
+        let respdata= await db.Level.update({
+            wc_status: parseInt(data.charAt(0)),
+            we_status: parseInt(data.charAt(1)),
+            dc_status: parseInt(data.charAt(2)),
+            de_status: parseInt(data.charAt(3)),
+            current: Array.from(data).map(x => parseInt(x, 10))
+        },{
+            where: {
+                level: floor
+            },
+            returning: true,
+            plain: true
+        })
+
+        res.send(respdata)
+    }
+    catch(err){
+        console.log(err)
+    }
 })
-
-
-
 
 module.exports = router;
