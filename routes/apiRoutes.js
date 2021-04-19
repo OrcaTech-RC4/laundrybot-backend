@@ -51,7 +51,7 @@ router.get('/levels/:level/statuses', async (req,res) => {
             
             const resp = {
                 ...datavalues,
-                level: 5,
+                level: level,
                 time: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
                 type: machines_names[i]
             }
@@ -86,7 +86,8 @@ router.get('/levels/:level/charts', (req,res) => {
 })
 
 router.post('/update', async (req,res) => {
-    let {floor,data} = req.body
+    let {floor:floordata,data} = req.body;
+    const floor = [5,8,11,14,17][floordata - 1];
     try {
         let current=await db.Level.findOne({
             attributes:["current"],
