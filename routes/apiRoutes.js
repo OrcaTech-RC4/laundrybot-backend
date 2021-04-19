@@ -51,7 +51,7 @@ router.get('/levels/:level/statuses', async (req,res) => {
             
             const resp = {
                 ...datavalues,
-                level: 5,
+                level: level,
                 time: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
                 type: machines_names[i]
             }
@@ -95,7 +95,8 @@ router.post('/update', (req,res) => {
         current: Array.from(data).map(x => parseInt(x, 10))
     },{
         where: {
-            level: floor
+            // floorcode is 1,2,3,4,5 (pi number) that maps to 5,8,11,14,17
+            level: [5,8,11,14,17][floor - 1]
         },
         returning: true,
         plain: true
